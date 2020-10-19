@@ -117,7 +117,7 @@ rpa_recap_one = '''
     limitation = 3
     for i in range(1,image_nums):
         if i <= 3:
-            url = 'https://www.bing.com'+ t.read(f'(//a[@class="richImgLnk"])[{i}]/img/@src')
+            url = t.read(f'(//a[@class="richImgLnk"])[{i}]/img/@src')
             t.download(url,'exercise_3/' + 'similar_'+str(i)+'.png')
     t.close()
 '''
@@ -128,9 +128,12 @@ rpa_recap_two = '''
             t.init(visual_automation = True)
             t.url('https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1580788659&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3dd234420e-f55a-d62c-a8e6-c1c9a31e4e54&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015')
             t.type('//input[@name="loginfmt"]', email_account + '[enter]')
-            t.wait(0.5)
+            t.wait(3)
             t.type('//input[@name="passwd"]', email_pwd + '[enter]')
-            t.wait(1)
+            t.wait(3)
+            if (t.present('//input[@id="idBtn_Back"]')):
+                t.click('//input[@id="idBtn_Back"]')
+            t.wait(8)
         except:
             t.close()
 '''
@@ -139,14 +142,7 @@ ipa_exercise_one = '''
     def getJobDescription():
         try:
             t.click('//input[@placeholder="Search"]')
-            t.click('//button[@id="filtersButtonId"]')
-            t.click('//span[contains(@class,"ms-Dropdown-caretDownWrapper")]')
-            t.click('//button[@title="Inbox"]')
-            t.type('(//input[@id="From-PICKER-ID"])','liyingxujiachen' + '[enter]')
-            # t.type('(//input[@id="From-PICKER-ID"])','nustalentconnect@csm.symplicity.com' + '[enter]')
-            t.wait(1)
-            t.type('//input[@id="Keywords-ID"]','job opportunity')
-            t.wait(1)
+            t.type('//input[@placeholder="Search"]','from:liyingxujiachen job opportunity')
             t.click('//button[@aria-label="Search"]')
             t.wait(3)
             num_email=t.count('//div[@class="_1hHMVrN7VV4d6Ylz-FsMuP _18LAllQi61d4a4XNAr9prg"]')
@@ -155,6 +151,7 @@ ipa_exercise_one = '''
             for n in range(1,num_email+1):
                 t.click(f'(//div[@class="_1hHMVrN7VV4d6Ylz-FsMuP _18LAllQi61d4a4XNAr9prg"])[{n}]')
                 jd_files.append(os.path.join(CURRENT_PATH,hover_and_read('//a[@target="_blank"]/@href').split("location=./")[-1]))
+                t.wait(3)
                 print("Thoes job opportunities files ",jd_files)
             return jd_files
         finally:
@@ -169,8 +166,8 @@ ipa_exercise_two = '''
             t.wait(2)
             t.type("//input[contains(@class, 'ms-BasePicker-input')]"," ".join(to))
             t.wait(2)
-            t.click("//input[@id='subjectLine0']")
-            t.type("//input[@id='subjectLine0']",subject)
+            t.click("//input[contains(@class,'ms-TextField-field') and contains(@aria-label, 'subject')]")
+            t.type("//input[contains(@class,'ms-TextField-field') and contains(@aria-label, 'subject')]",subject)
             t.wait(2)
             t.click("//div[@role='textbox']")
             t.type("//div[@role='textbox']",body)
